@@ -3,13 +3,13 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.models.js";
 import dotenv from "dotenv";
 import { check, validationResult } from "express-validator";
+import bycrypt from "bcryptjs";
 
 const register = async (req, res) => {
   const { name, email, cpf, password } = req.body;
 
   try {
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const newUser = new User({ name, email, cpf, password: hashedPassword });
+    const newUser = new User({ name, email, cpf, password: password });
     await newUser.save();
     res.status(201).json({ message: "usuario registrado" });
   } catch (error) {
@@ -31,7 +31,7 @@ const login = async (req, res) => {
     res.json({ token }); ktu
   } catch (error) {
     console.error("Erro ao fazer login:", error);
-    res.status(500).json({ message: "Erro ao fazer login" });
+    res.status(500).json({ message: "Erro ao fazer login", error });
   }
 };
 dotenv.config();
