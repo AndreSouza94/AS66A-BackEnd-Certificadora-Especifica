@@ -1,12 +1,13 @@
 import * as authService from "../services/auth.service.js";
 
+
 const singToken = (userId) => {
   return jwt.sing({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { name, email, cpf, password } = req.body;
     const Newuser = await authService.register({ name, email, cpf, password });
