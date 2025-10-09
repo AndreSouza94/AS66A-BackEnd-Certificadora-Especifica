@@ -1,5 +1,5 @@
 import express from 'express';
-import authRoutes from './api/auth.routes.js';
+import authRoutes from './api/index.js';
 
 const app = express();
 
@@ -9,6 +9,6 @@ app.get('/', (req, res) => {
   res.send('A API está rodando....');
 });
 
-app.use('/api/auth', authRoutes);
+app.use('/api/', authRoutes);
 
 export default app;
