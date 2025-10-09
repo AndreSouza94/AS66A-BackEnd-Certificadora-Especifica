@@ -1,41 +1,48 @@
+import jwt from "jsonwebtoken";
 import * as authService from "../services/auth.service.js";
 
-
-const singToken = (userId) => {
-  return jwt.sing({ id: userId }, process.env.JWT_SECRET, {
+const signToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { name, email, cpf, password } = req.body;
-    const Newuser = await authService.register({ name, email, cpf, password });
-    res.status(201).json({
-      status: "sucess",
-      message: "Usuario registrado com sucesso",
-      data: {
-        user: Newuser,
-      },
-    });
+
+    const newUser = await authService.registerUser({ name, email, cpf, password });
 
     newUser.password = undefined;
+
+    res.status(201).json({
+      status: "success",
+      message: "Usuário registrado com sucesso",
+      data: {
+        user: newUser,
+      },
+    });
   } catch (error) {
-    console.error("Erro ao registrar usuario:", error);
-    res.status(500).json({ message: "Erro ao registrar usuario" });
+    console.error("Erro ao registrar usuário:", error);
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Email ou CPF já cadastrado." });
+    }
+    res.status(500).json({ message: "Erro ao registrar usuário" });
   }
 };
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await authService.login({ email, password });
-    const token = singToken(user._id);
+
+    const user = await authService.loginUser({ email, password });
+
+    const token = signToken(user._id);
 
     user.password = undefined;
 
     res.status(200).json({
-      status: "sucess",
+      status: "success",
       token,
       data: {
         user,
@@ -43,6 +50,9 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error("Erro ao fazer login:", error);
+    if (error.message.includes("Credenciais inválidas")) {
+      return res.status(401).json({ message: error.message });
+    }
     res.status(500).json({ message: "Erro ao fazer login" });
   }
 };
