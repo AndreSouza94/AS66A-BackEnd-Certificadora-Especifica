@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import * as authService from "../services/auth.service.js";
+import { registerUser, loginUser } from "../services/auth.service.js";
 
 const signToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -10,8 +10,7 @@ const signToken = (userId) => {
 export const register = async (req, res) => {
   try {
     const { name, email, cpf, password } = req.body;
-
-    const newUser = await authService.registerUser({ name, email, cpf, password });
+    const newUser = await registerUser({ name, email, cpf, password });
 
     newUser.password = undefined;
 
@@ -27,6 +26,9 @@ export const register = async (req, res) => {
     if (error.code === 11000) {
       return res.status(409).json({ message: "Email ou CPF já cadastrado." });
     }
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: error.message });
+    }
     res.status(500).json({ message: "Erro ao registrar usuário" });
   }
 };
@@ -34,9 +36,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    const user = await authService.loginUser({ email, password });
-
+    const user = await loginUser({ email, password });
     const token = signToken(user._id);
 
     user.password = undefined;
@@ -56,3 +56,4 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Erro ao fazer login" });
   }
 };
+

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { validateCPF } from "../utils/cpfValidator.js";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -17,6 +18,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "O CPF é obrigatório."],
     unique: true,
+    validate: {
+      validator: validateCPF,
+      message: props => `${props.value} não é um CPF válido!`
+    }
   },
   password: {
     type: String,
