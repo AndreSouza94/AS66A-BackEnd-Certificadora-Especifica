@@ -1,4 +1,4 @@
 # Dependências
 node_modules/
 .env
-
+logs/
