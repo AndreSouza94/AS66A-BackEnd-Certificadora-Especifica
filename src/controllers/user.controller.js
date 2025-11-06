@@ -1,9 +1,6 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import User from "../models/user.models.js";
 import dotenv from "dotenv";
-import { check, validationResult } from "express-validator";
-import bycrypt from "bcryptjs";
 
 const register = async (req, res) => {
   const { name, email, cpf, password } = req.body;
