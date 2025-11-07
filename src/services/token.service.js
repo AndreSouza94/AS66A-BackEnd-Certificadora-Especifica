@@ -21,6 +21,7 @@ export const tokenValido = (req, res, next) => {
         const decodedJWT = jwt.verify(token, secret); 
         
         if(decodedJWT) {
+            req.user = {id: decodedJWT.id};
             next();
         }
     } catch (error) {
