@@ -1,5 +1,8 @@
 # AS66A-BackEnd-Certificadora-Especifica
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 # 💰 Backend para Calculadora de Investimentos
 
 Este é o repositório do **backend** para uma aplicação de **calculadora de investimentos**.  
