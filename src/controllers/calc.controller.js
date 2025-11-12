@@ -13,42 +13,49 @@ export const getCalc = async (req, res) => {
 
 export const calc = async (req, res) => {
     try {
-        const { tipo, valorInicial, tempoAnos, rentabilidade} = req.body;
+        const { tipo, valorInicial, dataInicial, dataFinal, rentabilidade} = req.body;
         const userId = req.user.id;
-        const result = valorInicial * Math.pow((1 + (rentabilidade / 100)), tempoAnos);
-    
-        let impostoIR;
-        let tempoMeses = tempoAnos * 12;
-        let dias = tempoMeses * 30;
         
-        if(tipo === "cdb" || tipo === "tesouro-direto") {
-            if(dias <= 180) {
-                impostoIR = 0.225;
-            } else if(dias > 180 && dias <= 360) {
-                impostoIR = 0.200;
-            } else if(dias > 360 && dias <= 720) {
-                impostoIR = 0.175;
-            } else {
-                impostoIR = 0.150;
-            }  
-        } else if (tipo === "lci" || tipo === "lca" || tipo === "cri" || tipo === "cra") {
-            impostoIR = 0.0;
+        let impostoRenda, impostoIOF, diferencaDias = dataFinal - dataInicial;
+
+        // Fórmula de Juros compostos
+        const resultado = valorInicial * Math.pow((1 + (rentabilidade / 100)), (diferencaDias / 365));
+
+        // Cálculo de IOF
+        if(diferencaDias <= 30) {
+            impostoIOF = (diferencaDias * 30) - ((diferencaDias / 3) - 1) * 100;
+        }
+
+        //Valor do Imposto de Renda
+        if(tipo === "lci" || tipo === "lca") {
+            impostoRenda = 0.0; 
         } else {
-            return res.status(400).json({msg: "Tipo de investimento não existe!"});
+            if(diferencaDias <= 180) {
+                impostoRenda = 0.225;
+            } else if(diferencaDias <= 360) {
+                impostoRenda = 0.200;
+            } else if(diferencaDias <= 720) {
+                impostoRenda = 0.175;
+            } else {
+                impostoRenda = 0.150;
+            }  
         }
         
-        const custoTotal = (result - valorInicial) * impostoIR;
-        const valorFinal = result - custoTotal;
-        const lucroLiquido = result - valorInicial;
-        const impostoDeRenda = impostoIR * 100;
-    
+        const rendimentoBruto = resultado - valorInicial;       
+        const valorImpostoIR = rendimentoBruto * impostoRenda;     
+        const valorImpostoIOF = rendimentoBruto * Number(impostoIOF) || 0;
+        const impostosTotais = valorImpostoIOF + valorImpostoIR;
+        const lucroLiquido = resultado - impostosTotais;          
+
         const newHistorico = await HistoricoModel.create({
             usuarioId: userId,
             tipo,
             valorInicial,
-            tempoAnos,
+            tempoDias: diferencaDias,
             rentabilidade,
-            valorFinal: valorFinal.toFixed(2),
+            rendimentoBruto: rendimentoBruto.toFixed(2),
+            impostoIOF: valorImpostoIOF.toFixed(2),
+            impostoRenda: valorImpostoIR.toFixed(2),
             lucroLiquido: lucroLiquido.toFixed(2),
         })
         
