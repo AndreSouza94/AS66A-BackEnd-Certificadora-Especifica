@@ -5,12 +5,13 @@ import cors from 'cors';
 import MongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 
+const app = express();
+
 app.use(helmet());
 app.use(cors());
 app.use(MongoSanitize());
 app.use(xss());
 
-const app = express();
 
 app.use(express.json());
 
