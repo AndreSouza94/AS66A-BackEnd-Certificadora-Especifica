@@ -76,7 +76,7 @@ export const forgotPassword = async (req, res) => {
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetURL = `https://andresouza94.github.io/AS66A-Front-End-Certificadora-Especifica/Projeto/redefinir-senha.html/${resetToken}`;
+    const resetURL = `https://andresouza94.github.io/AS66A-Front-End-Certificadora-Especifica/Projeto/redefinir-senha.html?token=${resetToken}`;
     const html = getPasswordResetHTML(resetURL);
 
     await sendEmail({
