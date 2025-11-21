@@ -11,6 +11,9 @@ const historicoSchema = new mongoose.Schema({
     valorInicial: {
         type: Number,
     },
+    valorAporte: {
+        type: Number,
+    },
     tempoDias: {
         type: Number,
     },
@@ -20,6 +23,9 @@ const historicoSchema = new mongoose.Schema({
     rendimentoBruto: {
         type: Number
     },  
+    rendimentoAporte: {
+        type: Number,
+    },
     impostoIOF: {
         type: Number
     },
