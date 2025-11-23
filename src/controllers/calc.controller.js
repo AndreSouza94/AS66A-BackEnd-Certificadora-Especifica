@@ -83,7 +83,7 @@ export const calcular = async (req, res) => {
 
         if(tempoDias <= 30) {
             if (tipo === "cdb" || tipo === "tesouro") {
-                impostoIOF_Taxa = ((tempoDias * 30) - ((tempoDias / 3) - 1) * 100) / 100;
+                impostoIOF_Taxa = Math.trunc((tempoDias * 30) - ((tempoDias / 3) - 1) * 100) / 100;
             }
         }
 
