@@ -22,14 +22,15 @@ export const calcular = async (req, res) => {
             msDiferenca = dataFinal - dataInicial
         
         let tempoDias = msDiferenca / (1000 * 60 * 60 * 24);
+        
         if (tempoDias < 1) {
             tempoDias = 1;
         }
 
         let meses = Math.floor(tempoDias / 30);
 
-        // Fórmula de Juros compostos, verificando o aporte
         const monthlySeries = [];
+        
         let totalCapitalAportado = valorInicial;
 
         if (aporte > 0) {
@@ -38,7 +39,7 @@ export const calcular = async (req, res) => {
         
          if (aporte === 0) {
             
-            resultado = valorInicial * Math.exp( (rentabilidade / 100) * (tempoDias / 365) );
+            resultado = valorInicial * Math.exp((rentabilidade / 100) * (tempoDias / 365) );
             
             const fatorCapitalizacaoMensal = Math.pow(1 + rentabilidade / 100, 1 / 12); 
             let saldo = valorInicial;
@@ -84,7 +85,7 @@ export const calcular = async (req, res) => {
 
         if(tempoDias <= 30) {
             if (tipo === "cdb" || tipo === "tesouro") {
-                impostoIOF_Taxa = ((tempoDias * 30) - ((tempoDias / 3) - 1) * 100) / 100;
+                impostoIOF_Taxa = Math.trunc((tempoDias * 30) - ((tempoDias / 3) - 1) * 100) / 100;
             }
         }
 
