@@ -39,8 +39,12 @@ export const calcular = async (req, res) => {
         
          if (aporte === 0) {
             
-            resultado = valorInicial * Math.exp((rentabilidade / 100) * (tempoDias / 365) );
-            
+            if(tempoDias <= 30) {
+                resultado = valorInicial * Math.exp((rentabilidade / 100) * (tempoDias / 365) );
+            } else {
+                resultado = valorInicial * Math.pow(1 + rentabilidade / 100, tempoDias / 365);
+            }
+
             const fatorCapitalizacaoMensal = Math.pow(1 + rentabilidade / 100, 1 / 12); 
             let saldo = valorInicial;
             
