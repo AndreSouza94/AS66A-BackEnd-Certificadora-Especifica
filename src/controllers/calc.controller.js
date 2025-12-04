@@ -40,7 +40,7 @@ export const calcular = async (req, res) => {
          if (aporte === 0) {
             
             if(tempoDias <= 30) {
-                resultado = valorInicial * Math.exp((rentabilidade / 100) * (tempoDias / 365) );
+                resultado = valorInicial * Math.exp((rentabilidade / 100) * (tempoDias / 365));
             } else {
                 resultado = valorInicial * Math.pow(1 + rentabilidade / 100, tempoDias / 365);
             }
@@ -108,8 +108,8 @@ export const calcular = async (req, res) => {
         }
         
         const rendimentoBruto = resultado - totalCapitalAportado;       
-        const valorImpostoIR = rendimentoBruto * impostoRenda;     
         const valorImpostoIOF = rendimentoBruto * Number(impostoIOF_Taxa) || 0;
+        const valorImpostoIR = (rendimentoBruto - valorImpostoIOF) * impostoRenda;     
         const impostosTotais = valorImpostoIOF + valorImpostoIR;
         const lucroLiquido = resultado - impostosTotais;          
 
